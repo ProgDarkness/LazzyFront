@@ -9,9 +9,6 @@ import { Button } from 'primereact/button'
 import { InputText } from 'primereact/inputtext'
 import { Card } from 'primereact/card'
 import CryptoJS from 'crypto-js'
-import Image from 'next/image'
-import emblema from 'public/images/ELEMENTOS CAMI SISTEMA-06.png'
-import { motion } from 'framer-motion'
 import { Password } from 'primereact/password'
 import { Dialog } from 'primereact/dialog'
 
@@ -60,19 +57,6 @@ export default function Index() {
     )
   }
 
-  const icon = {
-    hidden: {
-      opacity: 0,
-      pathLength: 0,
-      fill: 'rgba(255, 255, 255, 0)'
-    },
-    visible: {
-      opacity: 1,
-      pathLength: 1,
-      fill: 'rgba(255, 255, 255, 1)'
-    }
-  }
-
   const comprobarNewUser = () => {
     newUser({ cedula: parseInt(state.usuario) }).then(
       ({ newUser: { status, message, type, response } }) => {
@@ -99,46 +83,37 @@ export default function Index() {
   }
   /* 14965070 */
   const validarContraseña = () => {
-    if (correoUser.includes('@cne.gob.ve')) {
-      if (confirClave === claveUser) {
-        insertNewUser({
-          cedula: parseInt(state.usuario),
-          correo: correoUser,
-          clave: CryptoJS.AES.encrypt(
-            claveUser,
-            process.env.NEXT_PUBLIC_SECRET_KEY
-          ).toString()
-        }).then(({ inserNewUser: { status, message, type } }) => {
-          setVisiblebDialogNewUser(false)
-          toast.current.show({
-            severity: type,
-            summary: 'Atención',
-            detail: message,
-            life: 4000
-          })
-          setCorreoUser('')
-          setClaveUser('')
-          setConfirClave('')
-          setState({
-            usuario: '',
-            clave_: '',
-            captcha: JSON.parse(process.env.NEXT_PUBLIC_PRODUCTION) ? '' : 'abc'
-          })
-        })
-      } else {
+    if (confirClave === claveUser) {
+      insertNewUser({
+        cedula: parseInt(state.usuario),
+        correo: correoUser,
+        clave: CryptoJS.AES.encrypt(
+          claveUser,
+          process.env.NEXT_PUBLIC_SECRET_KEY
+        ).toString()
+      }).then(({ inserNewUser: { status, message, type } }) => {
+        setVisiblebDialogNewUser(false)
         toast.current.show({
-          severity: 'warn',
-          summary: 'Info',
-          detail: 'La confirmacion no coincide con la contraseña',
+          severity: type,
+          summary: 'Atención',
+          detail: message,
           life: 4000
         })
-      }
+        setCorreoUser('')
+        setClaveUser('')
+        setConfirClave('')
+        setState({
+          usuario: '',
+          clave_: '',
+          captcha: JSON.parse(process.env.NEXT_PUBLIC_PRODUCTION) ? '' : 'abc'
+        })
+      })
     } else {
       toast.current.show({
         severity: 'warn',
         summary: 'Info',
-        detail: 'El correo registrado debe ser un correo valido @cne.gob.ve',
-        life: 8000
+        detail: 'La confirmacion no coincide con la contraseña',
+        life: 4000
       })
     }
   }
@@ -292,48 +267,14 @@ export default function Index() {
           </div>
         </div>
       </Dialog>
-      <div className="w-full grid grid-cols-2">
-        <motion.div
-          variants={icon}
-          initial="hidden"
-          animate="visible"
-          transition={{
-            delay: 0.2,
-            default: { duration: 2, ease: 'easeInOut' },
-            fill: { duration: 2, ease: [1, 0, 0.8, 1] }
-          }}
-          className="w-2/3 mx-auto"
-        >
-          <Image src={emblema} />
-        </motion.div>
-
+      <div className="w-full grid grid-cols-1">
         <div className="grid items-center">
-          <motion.div
-            animate={{
-              rotateY: [0, 360],
-              x: [250, 0],
-              opacity: [0, 1],
-              scale: [0, 1]
-            }}
-            transition={{
-              duration: 2,
-              type: 'Inertia',
-              stiffness: 100,
-              ease: 'linear'
-            }}
-          >
-            <Card className="w-1/2 mx-auto text-center bg-[#00454d] text-white redondeo-xl">
-              <motion.div
-                variants={icon}
-                initial="hidden"
-                animate="visible"
-                transition={{
-                  delay: 0.5,
-                  default: { duration: 4, ease: 'easeInOut' },
-                  fill: { duration: 4, ease: [1, 0, 0.8, 1] }
-                }}
-                className="grid grid-cols-1 gap-6 w-4/5 mx-auto"
-              >
+          <div>
+            <Card
+              className="w-[25%] text-center bg-[#dbcdae] text-white redondeo-xl"
+              style={{ marginLeft: 'auto', marginRight: 'auto' }}
+            >
+              <div className="grid grid-cols-1 gap-6 w-4/5 mx-auto">
                 <h6
                   style={{
                     fontWeight: 'bold',
@@ -387,30 +328,21 @@ export default function Index() {
                     disabled={state.usuario === '' || state.clave_ === ''}
                     onClick={comprobarNewUser}
                   />
+                  <Button
+                    id="btn-register"
+                    icon="pi pi-user-plus"
+                    className="redondeo-lg w-40 h-6 bg-[#40b4bf] text-black mt-3"
+                    label="Registrate"
+                    disabled={state.usuario === '' || state.clave_ === ''}
+                    onClick={comprobarNewUser}
+                  />
                 </div>
-
-                {/* <div className="grid grid-cols-1 text-left">
-                  <Link href="/ejemplos">
-                    <a className="flex flex-row items-center">
-                      <FontAwesomeIcon icon={faUnlockKeyhole} />
-                      <label className="ml-2 cursor-pointer">
-                        Recuperar clave
-                      </label>
-                    </a>
-                  </Link>
-
-                  {<Button
-                    className="rounded-full w-40 h-6 bg-[#40b4bf] text-black"
-                    label="Recuperar clave"
-                  />}
-                </div> */}
-              </motion.div>
+              </div>
             </Card>
-          </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* <Button label="Ver Ejemplos" onClick={() => router.push('/ejemplos')} /> */}
       <style jsx global>{`
         .item {
           width: 56%;

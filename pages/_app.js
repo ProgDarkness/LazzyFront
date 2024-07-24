@@ -162,13 +162,13 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <title>CAMI</title>
+        <title>Lazzy</title>
         <link rel="icon" href="/favicon.ico" />
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta
           name="description"
-          content="Centro de Atencion Médica Integral para el personal de salud del CNE"
+          content="Biblioteca Virtual para amantes de la lectura"
         />
         <meta name="theme-color" content="#000000" />
       </Head>
