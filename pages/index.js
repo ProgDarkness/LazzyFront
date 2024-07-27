@@ -10,12 +10,13 @@ import { InputText } from 'primereact/inputtext'
 import { Card } from 'primereact/card'
 import CryptoJS from 'crypto-js'
 import { Password } from 'primereact/password'
-import { Dialog } from 'primereact/dialog'
+
+import DialogRegister from './register'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 // import the icons you need
-import { faUser, faKey, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faUser, faKey } from '@fortawesome/free-solid-svg-icons'
 
 export default function Index() {
   const router = useRouter()
@@ -25,9 +26,7 @@ export default function Index() {
     clave_: '',
     captcha: JSON.parse(process.env.NEXT_PUBLIC_PRODUCTION) ? '' : 'abc'
   })
-  const [correoUser, setCorreoUser] = useState(null)
-  const [claveUser, setClaveUser] = useState(null)
-  const [confirClave, setConfirClave] = useState(null)
+
   const [visiblebDialogNewUser, setVisiblebDialogNewUser] = useState(false)
 
   const login = (variables) => {
@@ -42,16 +41,6 @@ export default function Index() {
       request(
         process.env.NEXT_PUBLIC_URL_BACKEND,
         GQLLogin.NEW_USER,
-        variables
-      ) || null
-    )
-  }
-
-  const insertNewUser = (variables) => {
-    return (
-      request(
-        process.env.NEXT_PUBLIC_URL_BACKEND,
-        GQLLogin.INSERT_NEW_USER,
         variables
       ) || null
     )
@@ -80,42 +69,6 @@ export default function Index() {
         }
       }
     )
-  }
-  /* 14965070 */
-  const validarContraseña = () => {
-    if (confirClave === claveUser) {
-      insertNewUser({
-        cedula: parseInt(state.usuario),
-        correo: correoUser,
-        clave: CryptoJS.AES.encrypt(
-          claveUser,
-          process.env.NEXT_PUBLIC_SECRET_KEY
-        ).toString()
-      }).then(({ inserNewUser: { status, message, type } }) => {
-        setVisiblebDialogNewUser(false)
-        toast.current.show({
-          severity: type,
-          summary: 'Atención',
-          detail: message,
-          life: 4000
-        })
-        setCorreoUser('')
-        setClaveUser('')
-        setConfirClave('')
-        setState({
-          usuario: '',
-          clave_: '',
-          captcha: JSON.parse(process.env.NEXT_PUBLIC_PRODUCTION) ? '' : 'abc'
-        })
-      })
-    } else {
-      toast.current.show({
-        severity: 'warn',
-        summary: 'Info',
-        detail: 'La confirmacion no coincide con la contraseña',
-        life: 4000
-      })
-    }
   }
 
   const iniciarSesion = () => {
@@ -166,178 +119,86 @@ export default function Index() {
     }
   }
 
-  const onEnterR = (e) => {
-    if (e.keyCode === 13 || e.charCode === 13) {
-      document.querySelector('#btn-registrar').click()
-    }
-  }
-
   return (
     <AppLayout marca={false}>
       <Toast ref={toast} />
-      <Dialog
-        visible={visiblebDialogNewUser}
-        resizable={false}
-        draggable={false}
-        showHeader={false}
-        modal={false}
-        contentClassName="rounded-xl"
-        contentStyle={{ backgroundColor: '#00454d' }}
-        onHide={() => {}}
-        className="mb-[5.5%] w-[25%]"
-      >
-        <div className="flex justify-center">
-          <div className="flex flex-col text-white w-[26rem] rounded-xl mt-2 text-center">
-            <div className="bg-[#2d8d97] redondeo-lg">
-              <h1 style={{ fontSize: '30px', fontWeight: '600' }}>USUARIO</h1>
-              <div>
-                <p>Debe Registrar su correo y contraseña </p>
-              </div>
-              <div>
-                <p>para ingresar al sistema</p>
-              </div>
-            </div>
-            <div className="p-inputgroup h-8 mt-5">
-              <span className="p-inputgroup-addon span-sesion">
-                <FontAwesomeIcon icon={faUser} />
-              </span>
-              <InputText
-                id="user"
-                value={correoUser}
-                autoComplete="off"
-                placeholder="Correo electrónico"
-                className="redondeo-input-addon"
-                onChange={(e) => setCorreoUser(e.target.value)}
-              />
-            </div>
-            <div className="p-inputgroup h-8 mt-5">
-              <span className="p-inputgroup-addon span-sesion">
-                <FontAwesomeIcon icon={faKey} />
-              </span>
-              <Password
-                id="password"
-                placeholder="Contraseña"
-                className="redondeo-input-addon"
-                toggleMask
-                value={claveUser}
-                feedback={false}
-                onKeyPress={onEnter}
-                onChange={(e) => setClaveUser(e.target.value)}
-              />
-            </div>
-            <div className="p-inputgroup h-8 mt-5">
-              <span className="p-inputgroup-addon span-sesion">
-                <FontAwesomeIcon icon={faCheck} />
-              </span>
-              <Password
-                id="password"
-                toggleMask
-                placeholder="Confirmar Contraseña"
-                className="redondeo-input-addon"
-                value={confirClave}
-                feedback={false}
-                onKeyPress={onEnterR}
-                onChange={(e) => setConfirClave(e.target.value)}
-              />
-            </div>
-            <div className="grid grid-cols-2 justify-items-center mt-3">
-              <Button
-                id="btn-registrar"
-                icon="pi pi-sign-in"
-                className="redondeo-lg w-40 h-6 bg-[#40b4bf] text-black"
-                label="Regritrate"
-                disabled={
-                  correoUser === null ||
-                  !correoUser.includes('@cne.gob.ve') ||
-                  claveUser === null ||
-                  claveUser?.length < 6 ||
-                  confirClave === null ||
-                  confirClave?.length < 6
-                }
-                onClick={validarContraseña}
-              />
-              <Button
-                id="btn-registrar-cancel"
-                icon="pi pi-sign-in"
-                className="rounded-xl w-40 h-6"
-                label="Cancelar"
-                onClick={() => setVisiblebDialogNewUser(false)}
-              />
-            </div>
-          </div>
-        </div>
-      </Dialog>
+      <DialogRegister
+        visiblebDialogNewUser={visiblebDialogNewUser}
+        setVisiblebDialogNewUser={setVisiblebDialogNewUser}
+      />
       <div className="w-full grid grid-cols-1">
         <div className="grid items-center">
           <div>
-            <Card
-              className="w-[25%] text-center bg-[#dbcdae] text-white rounded-xl mb-[8%]"
-              style={{ marginLeft: 'auto', marginRight: 'auto' }}
-            >
-              <div className="grid grid-cols-1 gap-6 w-4/5 mx-auto">
-                <h6
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: 30,
-                    fontFamily: 'Arial'
-                  }}
-                >
-                  Inicio de Sesión
-                </h6>
-                <div className="p-inputgroup h-8">
-                  <span className="p-inputgroup-addon span-sesion">
-                    <FontAwesomeIcon icon={faUser} />
-                  </span>
-                  <InputText
-                    keyfilter="pint"
-                    id="user"
-                    value={state.usuario}
-                    maxLength={8}
-                    autoComplete="off"
-                    placeholder="Usuario"
-                    className="rounded-xl"
-                    onChange={({ target: { value } }) =>
-                      setState((ps) => ({ ...ps, usuario: value }))
-                    }
-                  />
-                </div>
-                <div className="p-inputgroup h-8">
-                  <span className="p-inputgroup-addon span-sesion">
-                    <FontAwesomeIcon icon={faKey} />
-                  </span>
-                  <Password
-                    id="password"
-                    placeholder="Contraseña"
-                    className="redondeo-input-addon"
-                    toggleMask
-                    value={state.clave_}
-                    feedback={false}
-                    onKeyPress={onEnter}
-                    onChange={({ target }) =>
-                      setState((ps) => ({ ...ps, clave_: target.value }))
-                    }
-                  />
-                </div>
+            {!visiblebDialogNewUser && (
+              <Card
+                className="w-[25%] text-center bg-[#dbcdae] text-white rounded-xl mb-[10%]"
+                style={{ marginLeft: 'auto', marginRight: 'auto' }}
+              >
+                <div className="grid grid-cols-1 gap-6 w-4/5 mx-auto">
+                  <h6
+                    style={{
+                      fontWeight: 'bold',
+                      fontSize: 30,
+                      fontFamily: 'Arial'
+                    }}
+                  >
+                    Inicio de Sesión
+                  </h6>
+                  <div className="p-inputgroup h-8">
+                    <span className="p-inputgroup-addon span-sesion">
+                      <FontAwesomeIcon icon={faUser} />
+                    </span>
+                    <InputText
+                      keyfilter="pint"
+                      id="user"
+                      value={state.usuario}
+                      maxLength={8}
+                      autoComplete="off"
+                      placeholder="Usuario"
+                      className="rounded-xl"
+                      onChange={({ target: { value } }) =>
+                        setState((ps) => ({ ...ps, usuario: value }))
+                      }
+                    />
+                  </div>
+                  <div className="p-inputgroup h-8">
+                    <span className="p-inputgroup-addon span-sesion">
+                      <FontAwesomeIcon icon={faKey} />
+                    </span>
+                    <Password
+                      id="password"
+                      placeholder="Contraseña"
+                      className="redondeo-input-addon"
+                      toggleMask
+                      value={state.clave_}
+                      feedback={false}
+                      onKeyPress={onEnter}
+                      onChange={({ target }) =>
+                        setState((ps) => ({ ...ps, clave_: target.value }))
+                      }
+                    />
+                  </div>
 
-                <div className="grid grid-cols-1 justify-items-center">
-                  <Button
-                    id="btn-loguear"
-                    icon="pi pi-sign-in"
-                    className="rounded-xl w-40 h-6"
-                    label="Entrar"
-                    disabled={state.usuario === '' || state.clave_ === ''}
-                    onClick={comprobarNewUser}
-                  />
-                  <Button
-                    id="btn-register"
-                    icon="pi pi-user-plus"
-                    className="rounded-xl w-40 h-6 mt-3"
-                    label="Registrate"
-                    onClick={() => setVisiblebDialogNewUser(true)}
-                  />
+                  <div className="grid grid-cols-1 justify-items-center">
+                    <Button
+                      id="btn-loguear"
+                      icon="pi pi-sign-in"
+                      className="rounded-xl w-40 h-6"
+                      label="Entrar"
+                      disabled={state.usuario === '' || state.clave_ === ''}
+                      onClick={comprobarNewUser}
+                    />
+                    <Button
+                      id="btn-register"
+                      icon="pi pi-user-plus"
+                      className="rounded-xl w-40 h-6 mt-3"
+                      label="Registrate"
+                      onClick={() => setVisiblebDialogNewUser(true)}
+                    />
+                  </div>
                 </div>
-              </div>
-            </Card>
+              </Card>
+            )}
           </div>
         </div>
       </div>
