@@ -271,7 +271,7 @@ export default function Index() {
         <div className="grid items-center">
           <div>
             <Card
-              className="w-[25%] text-center bg-[#dbcdae] text-white redondeo-xl"
+              className="w-[25%] text-center bg-[#dbcdae] text-white redondeo-xl mb-12"
               style={{ marginLeft: 'auto', marginRight: 'auto' }}
             >
               <div className="grid grid-cols-1 gap-6 w-4/5 mx-auto">
