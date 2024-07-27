@@ -271,7 +271,7 @@ export default function Index() {
         <div className="grid items-center">
           <div>
             <Card
-              className="w-[25%] text-center bg-[#dbcdae] text-white redondeo-xl"
+              className="w-[25%] text-center bg-[#dbcdae] text-white rounded-xl mb-[8%]"
               style={{ marginLeft: 'auto', marginRight: 'auto' }}
             >
               <div className="grid grid-cols-1 gap-6 w-4/5 mx-auto">
@@ -295,7 +295,7 @@ export default function Index() {
                     maxLength={8}
                     autoComplete="off"
                     placeholder="Usuario"
-                    className="redondeo-input-addon"
+                    className="rounded-xl"
                     onChange={({ target: { value } }) =>
                       setState((ps) => ({ ...ps, usuario: value }))
                     }
@@ -323,7 +323,7 @@ export default function Index() {
                   <Button
                     id="btn-loguear"
                     icon="pi pi-sign-in"
-                    className="redondeo-lg w-40 h-6 bg-[#40b4bf] text-black"
+                    className="rounded-xl w-40 h-6 bg-[#40b4bf] text-black"
                     label="Entrar"
                     disabled={state.usuario === '' || state.clave_ === ''}
                     onClick={comprobarNewUser}
@@ -331,7 +331,7 @@ export default function Index() {
                   <Button
                     id="btn-register"
                     icon="pi pi-user-plus"
-                    className="redondeo-lg w-40 h-6 bg-[#40b4bf] text-black mt-3"
+                    className="rounded-xl w-40 h-6 bg-[#40b4bf] text-black mt-3"
                     label="Registrate"
                     disabled={state.usuario === '' || state.clave_ === ''}
                     onClick={comprobarNewUser}
