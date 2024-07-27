@@ -8,7 +8,8 @@ import { Button } from 'primereact/button'
 import { useIdleTimer } from 'react-idle-timer'
 import { useRouter } from 'next/router'
 import { addLocale } from 'primereact/api'
-import 'primereact/resources/themes/mdc-light-indigo/theme.css' // theme
+// import 'primereact/resources/themes/mdc-light-indigo/theme.css' // theme
+import 'primereact/resources/themes/lara-light-purple/theme.css'
 import 'primereact/resources/primereact.min.css' // core css
 import 'primeicons/primeicons.css' // icons
 import 'styles/globals.css'
@@ -188,7 +189,13 @@ function MyApp({ Component, pageProps }) {
       >
         <div className="text-center">
           <h3 className="mb-2">Su sesión expirará</h3>
-          <Knob value={tiempoRestante} min={0} max={MAX_CONTADOR} readOnly className="flex justify-center"/>
+          <Knob
+            value={tiempoRestante}
+            min={0}
+            max={MAX_CONTADOR}
+            readOnly
+            className="flex justify-center"
+          />
           <h3 className="mt-2">¿Desea mantener su sesión activa?</h3>
         </div>
       </Dialog>

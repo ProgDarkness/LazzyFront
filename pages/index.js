@@ -180,13 +180,13 @@ export default function Index() {
         resizable={false}
         draggable={false}
         showHeader={false}
-        style={{ width: '450px', height: '400px' }}
-        contentClassName="redondeo-xl"
+        contentClassName="rounded-xl"
         contentStyle={{ backgroundColor: '#00454d' }}
         onHide={() => {}}
+        className="mb-[5.5%] w-[25%]"
       >
         <div className="flex justify-center">
-          <div className="flex flex-col text-white w-[26rem] redondeo-xl mt-2 text-center">
+          <div className="flex flex-col text-white w-[26rem] rounded-xl mt-2 text-center">
             <div className="bg-[#2d8d97] redondeo-lg">
               <h1 style={{ fontSize: '30px', fontWeight: '600' }}>USUARIO</h1>
               <div>
@@ -194,14 +194,6 @@ export default function Index() {
               </div>
               <div>
                 <p>para ingresar al sistema</p>
-              </div>
-            </div>
-            <div className="bg-[#babd2bcc] redondeo-lg mt-5">
-              <div>
-                <p>- La contraseña debe tener por lo menos 6 digitos</p>
-              </div>
-              <div>
-                <p>- El correo debe ser una dirección válida @cne.gob.ve</p>
               </div>
             </div>
             <div className="p-inputgroup h-8 mt-5">
@@ -247,12 +239,12 @@ export default function Index() {
                 onChange={(e) => setConfirClave(e.target.value)}
               />
             </div>
-            <div className="grid grid-cols-1 justify-items-center mt-3">
+            <div className="grid grid-cols-2 justify-items-center mt-3">
               <Button
                 id="btn-registrar"
                 icon="pi pi-sign-in"
                 className="redondeo-lg w-40 h-6 bg-[#40b4bf] text-black"
-                label="Entrar"
+                label="Regritrate"
                 disabled={
                   correoUser === null ||
                   !correoUser.includes('@cne.gob.ve') ||
@@ -262,6 +254,13 @@ export default function Index() {
                   confirClave?.length < 6
                 }
                 onClick={validarContraseña}
+              />
+              <Button
+                id="btn-registrar-cancel"
+                icon="pi pi-sign-in"
+                className="rounded-xl w-40 h-6"
+                label="Cancelar"
+                onClick={() => setVisiblebDialogNewUser(false)}
               />
             </div>
           </div>
@@ -323,7 +322,7 @@ export default function Index() {
                   <Button
                     id="btn-loguear"
                     icon="pi pi-sign-in"
-                    className="rounded-xl w-40 h-6 bg-[#40b4bf] text-black"
+                    className="rounded-xl w-40 h-6"
                     label="Entrar"
                     disabled={state.usuario === '' || state.clave_ === ''}
                     onClick={comprobarNewUser}
@@ -331,10 +330,9 @@ export default function Index() {
                   <Button
                     id="btn-register"
                     icon="pi pi-user-plus"
-                    className="rounded-xl w-40 h-6 bg-[#40b4bf] text-black mt-3"
+                    className="rounded-xl w-40 h-6 mt-3"
                     label="Registrate"
-                    disabled={state.usuario === '' || state.clave_ === ''}
-                    onClick={comprobarNewUser}
+                    onClick={() => setVisiblebDialogNewUser(true)}
                   />
                 </div>
               </div>
