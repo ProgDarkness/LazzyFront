@@ -180,6 +180,7 @@ export default function Index() {
         resizable={false}
         draggable={false}
         showHeader={false}
+        modal={false}
         contentClassName="rounded-xl"
         contentStyle={{ backgroundColor: '#00454d' }}
         onHide={() => {}}
