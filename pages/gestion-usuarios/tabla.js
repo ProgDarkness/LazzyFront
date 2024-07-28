@@ -143,10 +143,8 @@ function Tabla({ tokenQuery, permiso }) {
           <InputText
             value={globalFilterValue1}
             onChange={onGlobalFilterChange1}
-            placeholder="Buscar por Cédula"
+            placeholder="Buscar"
             autoComplete="off"
-            keyfilter="pint"
-            maxLength="8"
             className="redondeo-lg mt-2 sm:mt-0"
           />
         </span>
@@ -226,12 +224,12 @@ function Tabla({ tokenQuery, permiso }) {
         filterDisplay="row"
         filters={filters1}
         header={header}
-        globalFilterFields={['ced_usuario']}
+        globalFilterFields={['usuario']}
         emptyMessage="No se han encontrado usuarios"
       >
         <Column field="usuario" header="Nombre Usuario" />
         <Column field="nb_rol" header="Rol" body={rolBody} />
-        <Column body={correoBody} header="Correo" />
+        <Column field="correo" body={correoBody} header="Correo" />
         <Column body={accionBodyTemplate} header="Acciones" />
       </DataTable>
     </>
