@@ -336,7 +336,7 @@ function CrearRoles({ visibled, setVisibled, tokenQuery, permisos }) {
 
               <Button
                 label="Crear"
-                className="p-button-raised p-button-success redondeo-lg w-10 h-12"
+                className="p-button-raised p-button-success redondeo-lg h-12"
                 disabled={
                   nameRol?.length < 1 ||
                   nameRol === null ||
