@@ -114,8 +114,8 @@ function CrearUsuario({ visibled, setVisibled, refresUser }) {
       position="top-right"
     >
       <Toast ref={toast} />
-      <div className="grid grid-col-5">
-        <div className="p-inputgroup h-8 mt-3">
+      <div className="grid grid-cols-3 gap-4">
+        <div className="p-inputgroup">
           <span className="p-inputgroup-addon span-sesion">
             <FontAwesomeIcon icon={faUser} />
           </span>
@@ -131,7 +131,7 @@ function CrearUsuario({ visibled, setVisibled, refresUser }) {
             }
           />
         </div>
-        <div className="p-inputgroup h-8 mt-5">
+        <div className="p-inputgroup">
           <span className="p-inputgroup-addon span-sesion">
             <FontAwesomeIcon icon={faUser} />
           </span>
@@ -146,7 +146,7 @@ function CrearUsuario({ visibled, setVisibled, refresUser }) {
             }
           />
         </div>
-        <div className="p-inputgroup h-8 mt-5">
+        <div className="p-inputgroup">
           <span className="p-inputgroup-addon span-sesion">
             <FontAwesomeIcon icon={faKey} />
           </span>
@@ -162,7 +162,7 @@ function CrearUsuario({ visibled, setVisibled, refresUser }) {
             }
           />
         </div>
-        <div className="p-inputgroup h-8 mt-5">
+        <div className="p-inputgroup">
           <span className="p-inputgroup-addon span-sesion">
             <FontAwesomeIcon icon={faCheck} />
           </span>
@@ -177,7 +177,7 @@ function CrearUsuario({ visibled, setVisibled, refresUser }) {
             onChange={(e) => setConfirClave(e.target.value)}
           />
         </div>
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center col-span-3">
           <Button
             id="btn-registrar"
             icon="pi pi-sign-in"
