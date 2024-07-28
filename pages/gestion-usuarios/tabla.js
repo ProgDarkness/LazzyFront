@@ -24,7 +24,6 @@ function Tabla({ tokenQuery, permiso }) {
   const [visible, setVisible] = useState(false)
   const [rowDataEliminar, setRowDataEliminar] = useState(null)
   const toast = useRef(null)
-  const [visibleReset, setVisibleReset] = useState(false)
 
   const { data: usuarios, mutate } = useSWR(
     tokenQuery ? [GQLUsuarios.GET_USUARIOS, {}, tokenQuery] : null
@@ -34,14 +33,6 @@ function Tabla({ tokenQuery, permiso }) {
     return request(
       process.env.NEXT_PUBLIC_URL_BACKEND,
       GQLUsuarios.ELIMINAR_USUARIO,
-      variables,
-      { authorization: `Bearer ${tokenQuery}` }
-    )
-  }
-  const mutateReiniciarUsuario = (variables) => {
-    return request(
-      process.env.NEXT_PUBLIC_URL_BACKEND,
-      GQLUsuarios.REINICIAR_USUARIO,
       variables,
       { authorization: `Bearer ${tokenQuery}` }
     )
@@ -57,27 +48,6 @@ function Tabla({ tokenQuery, permiso }) {
     )
   }
 
-  const statusBody = (rowData) => {
-    let statusColor = ''
-    let tagStatus = ''
-    if (rowData.status_register) {
-      statusColor = '#cf5252'
-      tagStatus = 'NO CONFIRMADO'
-    } else {
-      statusColor = '#5ccf52'
-      tagStatus = 'CONFIRMADO'
-    }
-
-    return (
-      <span
-        className={`text-white p-1 font-extrabold redondeo-lg`}
-        style={{ backgroundColor: statusColor }}
-      >
-        {tagStatus}
-      </span>
-    )
-  }
-
   const correoBody = (rowData) => {
     return <>{rowData.tx_correo?.toLowerCase()}</>
   }
@@ -89,22 +59,8 @@ function Tabla({ tokenQuery, permiso }) {
 
   const accept = () => {
     mutateEliminarUsuario({
-      cedulaUsuario: parseInt(rowDataEliminar.ced_usuario)
-    }).then(({ eliminarUsuario: { status, message, type } }) => {
-      toast.current.show({
-        severity: type,
-        summary: 'Atención',
-        detail: message,
-        life: 3000
-      })
-      mutate()
-    })
-  }
-
-  const acceptReset = () => {
-    mutateReiniciarUsuario({
       co_usuario: parseInt(rowDataEliminar.co_usuario)
-    }).then(({ resetUser: { status, message, type } }) => {
+    }).then(({ eliminarUsuario: { status, message, type } }) => {
       toast.current.show({
         severity: type,
         summary: 'Atención',
@@ -119,9 +75,6 @@ function Tabla({ tokenQuery, permiso }) {
     setVisible(false)
   }
 
-  const rejectReset = () => {
-    setVisible(false)
-  }
   const accionBodyTemplate = (rowData) => {
     return (
       <div>
@@ -132,17 +85,6 @@ function Tabla({ tokenQuery, permiso }) {
             className="p-button-rounded p-button-danger"
             tooltip="Eliminar"
           ></Button>
-        )}
-        {permiso?.tx_permisos[3] && (
-          <Button
-            icon="pi pi-undo"
-            className="p-button-rounded p-button-warning ml-1"
-            onClick={() => {
-              setVisibleReset(true)
-              setRowDataEliminar(rowData)
-            }}
-            tooltip="Actualizar"
-          />
         )}
       </div>
     )
@@ -258,18 +200,6 @@ function Tabla({ tokenQuery, permiso }) {
         acceptLabel="Si"
       />
 
-      <ConfirmDialog
-        visible={visibleReset}
-        onHide={() => setVisibleReset(false)}
-        message="¿Deseas reiniciar este usuario?"
-        header="Confirmación"
-        icon="pi pi-exclamation-triangle"
-        accept={acceptReset}
-        reject={rejectReset}
-        rejectLabel="No"
-        acceptLabel="Si"
-      />
-
       <CrearUsuario
         setVisibled={setVisiblebCrearUsuario}
         visibled={visiblebCrearUsuario}
@@ -299,12 +229,9 @@ function Tabla({ tokenQuery, permiso }) {
         globalFilterFields={['ced_usuario']}
         emptyMessage="No se han encontrado usuarios"
       >
-        <Column field="ced_usuario" header="Cédula" />
-        <Column field="nb_usuario" header="Nombre" />
-        <Column field="ap_usuario" header="Apellido" />
+        <Column field="usuario" header="Nombre Usuario" />
         <Column field="nb_rol" header="Rol" body={rolBody} />
         <Column body={correoBody} header="Correo" />
-        <Column body={statusBody} header="Estatus" />
         <Column body={accionBodyTemplate} header="Acciones" />
       </DataTable>
     </>

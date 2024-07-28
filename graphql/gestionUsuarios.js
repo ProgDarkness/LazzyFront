@@ -5,12 +5,9 @@ export default {
     query {
       getUsuarios {
         co_usuario
-        ced_usuario
-        nb_usuario
-        ap_usuario
+        usuario
         nb_rol
         tx_correo
-        status_register
       }
     }
   `,
@@ -78,8 +75,8 @@ export default {
     }
   `,
   ELIMINAR_USUARIO: gql`
-    mutation eliminarUsuario($cedulaUsuario: Int!) {
-      eliminarUsuario(cedulaUsuario: $cedulaUsuario) {
+    mutation eliminarUsuario($co_usuario: Int!) {
+      eliminarUsuario(co_usuario: $co_usuario) {
         status
         message
         type
