@@ -18,7 +18,7 @@ function Salir({ visible, setVisible }) {
     <ConfirmDialog 
       visible={visible}
       onHide={() => setVisible(false)}
-      message="¿Seguro desea salir del Sistema CAMI?"
+      message="¿Seguro desea salir del Sistema Lazzy?"
       header="Confirmación"
       icon="pi pi-exclamation-triangle"
       accept={() => accept()}

@@ -1,43 +1,24 @@
 import { Dialog } from 'primereact/dialog'
 import { InputText } from 'primereact/inputtext'
-import { Dropdown } from 'primereact/dropdown'
-import vistaGestionUsuarios from '../../graphql/gestionUsuarios'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { Button } from 'primereact/button'
-import useSWR from 'swr'
-import { SelectButton } from 'primereact/selectbutton'
 import request from 'graphql-request'
 import { Toast } from 'primereact/toast'
 import { motion } from 'framer-motion'
+import CryptoJS from 'crypto-js'
+import GQLLogin from 'graphql/login'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faUser, faKey, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { Password } from 'primereact/password'
 
-function CrearUsuario({ visibled, setVisibled, tokenQuery, refresUser }) {
+function CrearUsuario({ visibled, setVisibled, refresUser }) {
   const toast = useRef(null)
-  const [nacionalidad, setNacionalidad] = useState({
-    name: 'Venezolano',
-    code: 'V'
+  const [state, setState] = useState({
+    usuario: '',
+    clave: '',
+    correo: ''
   })
-  const [cedula, setCedula] = useState(null)
-  const [primerNombre, setPrimerNombre] = useState(null)
-  const [segundoNombre, setSegundoNombre] = useState(null)
-  const [primerApellido, setPrimerApellido] = useState(null)
-  const [segundoApellido, setSegundoApellido] = useState(null)
-  const [errorCedula, setErrorCedula] = useState(false)
-  const [InputGuardarUsuario, setInputGuardarUsuario] = useState({})
-  const [incompleto, setIncompleto] = useState(false)
-  const [rol, setrol] = useState(null)
-
-  const { data: roles } = useSWR(
-    tokenQuery ? [vistaGestionUsuarios.GET_ROLES, {}, tokenQuery] : null
-  )
-
-  const consultarUsuariosParaCrear = (variables) => {
-    return request(
-      process.env.NEXT_PUBLIC_URL_BACKEND,
-      vistaGestionUsuarios.GET_CREAR_USUARIO,
-      variables,
-      { authorization: `Bearer ${tokenQuery}` }
-    )
-  }
+  const [confirClave, setConfirClave] = useState(null)
 
   function animation(input) {
     // eslint-disable-next-line prefer-const
@@ -57,96 +38,6 @@ function CrearUsuario({ visibled, setVisibled, tokenQuery, refresUser }) {
     return container
   }
 
-  const insertarUsuario = (variables) => {
-    return request(
-      process.env.NEXT_PUBLIC_URL_BACKEND,
-      vistaGestionUsuarios.CREAR_USUARIO,
-      { InputGuardarUsuario: variables },
-      { authorization: `Bearer ${tokenQuery}` }
-    )
-  }
-
-  useEffect(() => {
-    if (cedula?.length > 5 && nacionalidad) {
-      consultarUsuariosParaCrear({
-        cedula: parseInt(cedula),
-        nacionalidad: nacionalidad.code
-      }).then(({ getCrearUsuario }) => {
-        if (getCrearUsuario?.nombre1) {
-          setErrorCedula(false)
-          const nombre_1 = getCrearUsuario?.nombre1
-          const nombre_2 = getCrearUsuario?.nombre2
-          const apellido_1 = getCrearUsuario?.apellido1
-          const apellido_2 = getCrearUsuario?.apellido2
-
-          setPrimerNombre(nombre_1)
-          setPrimerApellido(apellido_1)
-          setSegundoNombre(nombre_2)
-          setSegundoApellido(apellido_2)
-        } else {
-          setErrorCedula(true)
-          setPrimerNombre('')
-          setPrimerApellido('')
-          setSegundoApellido('')
-          setSegundoNombre('')
-        }
-      })
-    } else {
-      setPrimerNombre('')
-      setPrimerApellido('')
-      setSegundoApellido('')
-      setSegundoNombre('')
-      setErrorCedula(false)
-    }
-  }, [cedula, nacionalidad])
-
-  function cerrarCrearPaciente() {
-    setVisibled(false)
-    setIncompleto(false)
-    setErrorCedula(false)
-    setCedula(null)
-    setPrimerNombre(null)
-    setPrimerApellido(null)
-    setInputGuardarUsuario({})
-    setrol(null)
-  }
-
-  function guardarUsuario(e) {
-    e.preventDefault()
-    if (
-      nacionalidad !== null &&
-      cedula !== null &&
-      primerNombre !== null &&
-      primerApellido !== null &&
-      rol !== null
-    ) {
-      InputGuardarUsuario.ced_usuario = parseInt(cedula)
-      InputGuardarUsuario.nb_usuario = primerNombre.toUpperCase()
-      InputGuardarUsuario.nb2_usuario = segundoNombre?.toUpperCase()
-      InputGuardarUsuario.ap_usuario = primerApellido.toUpperCase()
-      InputGuardarUsuario.ap2_usuario = segundoApellido?.toUpperCase()
-      InputGuardarUsuario.co_rol = rol.code
-
-      insertarUsuario(InputGuardarUsuario).then(
-        ({ crearUsuario: { status, message, type } }) => {
-          toast.current.show({
-            severity: type,
-            summary: 'Atención',
-            detail: message,
-            life: 3000
-          })
-          setTimeout(() => {
-            cerrarCrearPaciente()
-            refresUser()
-          }, 3000)
-        }
-      )
-    } else {
-      setIncompleto(true)
-      setInputGuardarUsuario({})
-    }
-  }
-
   const header = (
     <motion.div
       variants={animation(1)}
@@ -159,19 +50,63 @@ function CrearUsuario({ visibled, setVisibled, tokenQuery, refresUser }) {
     </motion.div>
   )
 
-  const nacionalidades = [
-    { name: 'Venezolano', code: 'V' },
-    { name: 'Extranjero', code: 'E' }
-  ]
+  const insertNewUser = (variables) => {
+    return (
+      request(
+        process.env.NEXT_PUBLIC_URL_BACKEND,
+        GQLLogin.INSERT_NEW_USER,
+        variables
+      ) || null
+    )
+  }
+
+  const validarContraseña = () => {
+    if (confirClave === state.clave) {
+      insertNewUser({
+        usuario: state.usuario,
+        correo: state.correo,
+        clave: CryptoJS.AES.encrypt(
+          state.clave,
+          process.env.NEXT_PUBLIC_SECRET_KEY
+        ).toString()
+      }).then(({ inserNewUser: { status, message, type } }) => {
+        refresUser()
+        toast.current.show({
+          severity: type,
+          summary: 'Atención',
+          detail: message,
+          life: 4000
+        })
+        setState({
+          usuario: '',
+          clave: '',
+          correo: ''
+        })
+        setConfirClave('')
+      })
+    } else {
+      setConfirClave('')
+      toast.current.show({
+        severity: 'warn',
+        summary: 'Info',
+        detail: 'La confirmacion no coincide con la contraseña',
+        life: 4000
+      })
+    }
+  }
+
+  const onEnterR = (e) => {
+    if (e.keyCode === 13 || e.charCode === 13) {
+      document.querySelector('#btn-registrar').click()
+    }
+  }
 
   return (
     <Dialog
       header={header}
       visible={visibled}
       className="w-full xl:w-[55vw]"
-      onHide={() => {
-        cerrarCrearPaciente()
-      }}
+      onHide={() => setVisibled(false)}
       resizable={false}
       draggable={false}
       contentClassName="redondeo-dialog-content"
@@ -179,185 +114,85 @@ function CrearUsuario({ visibled, setVisibled, tokenQuery, refresUser }) {
       position="top-right"
     >
       <Toast ref={toast} />
-      <div className="grid grid-cols-2 2xl:grid-cols-4 gap-4">
-        <motion.center
-          variants={animation(2)}
-          initial="hidden"
-          animate="visible"
-          className="col-span-2 2xl:col-span-4"
-        >
-          <div
-            style={{ fontSize: '20px', fontWeight: '600' }}
-            className="bg-[#dbcdae] text-white w-60 redondeo-xl"
-          >
-            <h1>DATOS DEL USUARIO</h1>
-          </div>
-        </motion.center>
-        <motion.div
-          variants={animation(3)}
-          initial="hidden"
-          animate="visible"
-          className="flex flex-row col-span-2"
-        >
-          <SelectButton
-            optionLabel="code"
-            value={nacionalidad}
-            options={nacionalidades}
-            onChange={(e) => setNacionalidad(e.value)}
-            className="nacionalidad p-[2.4px]"
+      <div className="grid grid-col-5">
+        <div className="p-inputgroup h-8 mt-3">
+          <span className="p-inputgroup-addon span-sesion">
+            <FontAwesomeIcon icon={faUser} />
+          </span>
+          <InputText
+            id="user"
+            value={state.usuario}
+            maxLength={8}
+            autoComplete="off"
+            placeholder="Usuario"
+            className="rounded-xl"
+            onChange={({ target: { value } }) =>
+              setState((ps) => ({ ...ps, usuario: value }))
+            }
           />
-          <div className="field  w-[80%]">
-            <div className="p-inputgroup ">
-              <span className="p-float-label ">
-                <InputText
-                  className={`redondeo-input-buttom-left${
-                    incompleto && cedula === null ? 'border-red-600' : ''
-                  } ${errorCedula ? 'border-red-600' : ''}`}
-                  value={cedula}
-                  onChange={(e) => setCedula(e.target.value)}
-                  keyfilter="pint"
-                  maxLength="8"
-                />
-                <label htmlFor="username">Cédula del Solicitante</label>
-              </span>
-              <Button
-                icon="pi pi-search"
-                className="redondeo-input-buttom-right"
-                disabled
-              />
-            </div>
-            {errorCedula && (
-              <small className="block text-red-600 text-center">
-                El Funcionario no existe en Nomina. <br /> Por favor dirigirse
-                con Talento Humano.
-              </small>
-            )}
-            {incompleto && cedula === null && (
-              <small className="block text-red-600 text-center">
-                Necesita registrar la Cédula.
-              </small>
-            )}
-          </div>
-        </motion.div>
-        <div className="field col-span-2">
-          <motion.span
-            variants={animation(3)}
-            initial="hidden"
-            animate="visible"
-            className="p-float-label"
-          >
-            <Dropdown
-              emptyMessage="No existen opciones disponibles"
-              className={`redondeo-lg w-full ${
-                incompleto && rol === null ? 'border-red-600' : ''
-              }`}
-              value={rol}
-              options={roles?.getRoles}
-              onChange={(e) => setrol(e.target.value)}
-              optionLabel="name"
-            />
-            <label htmlFor="username">Rol</label>
-          </motion.span>
-          {incompleto && rol === null && (
-            <small className="block text-red-600 text-center">
-              Necesita registrar el rol del Usuario.
-            </small>
-          )}
         </div>
-        <div className="field">
-          <motion.span
-            variants={animation(3)}
-            initial="hidden"
-            animate="visible"
-            className="p-float-label"
-          >
-            <InputText
-              id="username"
-              autoComplete="off"
-              value={primerNombre}
-              onChange={(e) => setPrimerNombre(e.target.value)}
-              className={`w-full ${
-                incompleto && primerNombre === null ? 'border-red-600' : ''
-              }`}
-              disabled
-            />
-            <label htmlFor="username">Primer Nombre</label>
-          </motion.span>
-          {incompleto && primerNombre === null && (
-            <small className="block text-red-600 text-center">
-              Necesita registrar el Nombre.
-            </small>
-          )}
+        <div className="p-inputgroup h-8 mt-5">
+          <span className="p-inputgroup-addon span-sesion">
+            <FontAwesomeIcon icon={faUser} />
+          </span>
+          <InputText
+            id="user"
+            value={state.correo}
+            autoComplete="off"
+            placeholder="Correo electrónico"
+            className="rounded-xl"
+            onChange={({ target: { value } }) =>
+              setState((ps) => ({ ...ps, correo: value }))
+            }
+          />
         </div>
-        <div className="field">
-          <motion.span
-            variants={animation(3)}
-            initial="hidden"
-            animate="visible"
-            className="p-float-label"
-          >
-            <InputText
-              id="username"
-              autoComplete="off"
-              value={segundoNombre}
-              onChange={(e) => setSegundoNombre(e.target.value)}
-              disabled
-              className="w-full"
-            />
-            <label htmlFor="username">Segundo Nombre</label>
-          </motion.span>
+        <div className="p-inputgroup h-8 mt-5">
+          <span className="p-inputgroup-addon span-sesion">
+            <FontAwesomeIcon icon={faKey} />
+          </span>
+          <Password
+            id="password"
+            placeholder="Contraseña"
+            className="redondeo-input-addon"
+            toggleMask
+            value={state.clave}
+            feedback={false}
+            onChange={({ target: { value } }) =>
+              setState((ps) => ({ ...ps, clave: value }))
+            }
+          />
         </div>
-        <div className="field">
-          <motion.span
-            variants={animation(3)}
-            initial="hidden"
-            animate="visible"
-            className="p-float-label"
-          >
-            <InputText
-              id="username"
-              autoComplete="off"
-              value={primerApellido}
-              onChange={(e) => setPrimerApellido(e.target.value)}
-              className={`w-full ${
-                incompleto && primerApellido === null ? 'border-red-600' : ''
-              }`}
-              disabled
-            />
-            <label htmlFor="username">Primer Apellido</label>
-          </motion.span>
-          {incompleto && primerApellido === null && (
-            <small className="block text-red-600 text-center">
-              Necesita registrar el Apellido.
-            </small>
-          )}
+        <div className="p-inputgroup h-8 mt-5">
+          <span className="p-inputgroup-addon span-sesion">
+            <FontAwesomeIcon icon={faCheck} />
+          </span>
+          <Password
+            id="password"
+            toggleMask
+            placeholder="Confirmar Contraseña"
+            className="redondeo-input-addon"
+            value={confirClave}
+            feedback={false}
+            onKeyPress={onEnterR}
+            onChange={(e) => setConfirClave(e.target.value)}
+          />
         </div>
-        <div className="field">
-          <motion.span
-            variants={animation(3)}
-            initial="hidden"
-            animate="visible"
-            className="p-float-label"
-          >
-            <InputText
-              id="username"
-              autoComplete="off"
-              value={segundoApellido}
-              onChange={(e) => setSegundoApellido(e.target.value)}
-              disabled
-              className="w-full"
-            />
-            <label htmlFor="username">Segundo Apellido</label>
-          </motion.span>
+        <div className="flex justify-center mt-4">
+          <Button
+            id="btn-registrar"
+            icon="pi pi-sign-in"
+            className="rounded-xl w-40 h-6"
+            label="Registrate"
+            disabled={
+              state.correo === null ||
+              state.clave === null ||
+              state.clave?.length < 6 ||
+              confirClave === null ||
+              confirClave?.length < 6
+            }
+            onClick={validarContraseña}
+          />
         </div>
-        <motion.center
-          variants={animation(2)}
-          initial="hidden"
-          animate="visible"
-          className="col-span-2 2xl:col-span-4"
-        >
-          <Button label="Crear" onClick={guardarUsuario} disabled={false} />
-        </motion.center>
       </div>
       {/* eslint-disable-next-line react/no-unknown-property */}
       <style jsx global>{`
