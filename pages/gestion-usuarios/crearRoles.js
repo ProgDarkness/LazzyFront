@@ -153,7 +153,7 @@ function CrearRoles({ visibled, setVisibled, tokenQuery, permisos }) {
       initial="hidden"
       animate="visible"
       style={{ fontSize: '27px', fontWeight: '600', textAlign: 'center' }}
-      className="bg-[#2a7e87] text-white w-80 redondeo-xl"
+      className="bg-[#dbcdae] text-white w-80 redondeo-xl"
     >
       <h1>CREAR ROLES</h1>
     </motion.div>
@@ -279,7 +279,7 @@ function CrearRoles({ visibled, setVisibled, tokenQuery, permisos }) {
               >
                 <div
                   style={{ fontSize: '20px', fontWeight: '600' }}
-                  className="bg-[#2a7e87] text-white w-60 redondeo-xl"
+                  className="bg-[#dbcdae] text-white w-60 redondeo-xl"
                 >
                   <h1>DATOS DEL ROL</h1>
                 </div>
@@ -359,7 +359,7 @@ function CrearRoles({ visibled, setVisibled, tokenQuery, permisos }) {
           >
             <div
               style={{ fontSize: '20px', fontWeight: '600' }}
-              className="bg-[#2a7e87] text-white w-60 redondeo-xl"
+              className="bg-[#dbcdae] text-white w-60 redondeo-xl"
             >
               <h1>ROLES</h1>
             </div>

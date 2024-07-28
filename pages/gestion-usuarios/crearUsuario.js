@@ -153,7 +153,7 @@ function CrearUsuario({ visibled, setVisibled, tokenQuery, refresUser }) {
       initial="hidden"
       animate="visible"
       style={{ fontSize: '27px', fontWeight: '600', textAlign: 'center' }}
-      className="bg-[#2a7e87] text-white w-80 redondeo-xl"
+      className="bg-[#dbcdae] text-white w-80 redondeo-xl"
     >
       <h1>CREAR USUARIO</h1>
     </motion.div>
@@ -188,7 +188,7 @@ function CrearUsuario({ visibled, setVisibled, tokenQuery, refresUser }) {
         >
           <div
             style={{ fontSize: '20px', fontWeight: '600' }}
-            className="bg-[#2a7e87] text-white w-60 redondeo-xl"
+            className="bg-[#dbcdae] text-white w-60 redondeo-xl"
           >
             <h1>DATOS DEL USUARIO</h1>
           </div>
@@ -382,18 +382,18 @@ function CrearUsuario({ visibled, setVisibled, tokenQuery, refresUser }) {
           opacity: 1;
         }
         .p-selectbutton .p-button.p-highlight {
-          background: #2a7e87;
-          border-color: #2a7e87;
+          background: #dbcdae;
+          border-color: #dbcdae;
           color: white;
         }
         button:not(button):not(a):not(.p-disabled):active {
-          background: #2a7e87;
-          border-color: #2a7e87;
+          background: #dbcdae;
+          border-color: #dbcdae;
           color: white;
         }
         .p-selectbutton .p-button:focus.p-highlight {
-          background: #2a7e87;
-          border-color: #2a7e87;
+          background: #dbcdae;
+          border-color: #dbcdae;
           color: white;
         }
         .redondeo-dialog-header {

@@ -196,7 +196,7 @@ function VerRol({ visibled, setVisibled, tokenQuery, rowDataCodeRol }) {
       initial="hidden"
       animate="visible"
       style={{ fontSize: '27px', fontWeight: '600', textAlign: 'center' }}
-      className="bg-[#2a7e87] text-white w-80 redondeo-xl"
+      className="bg-[#dbcdae] text-white w-80 redondeo-xl"
     >
       <h1>MODIFICAR ROL</h1>
     </motion.div>
@@ -307,7 +307,7 @@ function VerRol({ visibled, setVisibled, tokenQuery, rowDataCodeRol }) {
           >
             <div
               style={{ fontSize: '20px', fontWeight: '600' }}
-              className="bg-[#2a7e87] text-white w-[60%] redondeo-xl"
+              className="bg-[#dbcdae] text-white w-[60%] redondeo-xl"
             >
               <h1>
                 Agregar permisos al rol:{' '}
@@ -369,7 +369,7 @@ function VerRol({ visibled, setVisibled, tokenQuery, rowDataCodeRol }) {
           >
             <div
               style={{ fontSize: '20px', fontWeight: '600' }}
-              className="bg-[#2a7e87] text-white w-[60%] redondeo-xl"
+              className="bg-[#dbcdae] text-white w-[60%] redondeo-xl"
             >
               <h1>
                 Permisos del Rol:{' '}
