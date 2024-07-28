@@ -23,8 +23,7 @@ export default function Index() {
   const toast = useRef(null)
   const [state, setState] = useState({
     usuario: '',
-    clave_: '',
-    captcha: JSON.parse(process.env.NEXT_PUBLIC_PRODUCTION) ? '' : 'abc'
+    clave: ''
   })
 
   const [visiblebDialogNewUser, setVisiblebDialogNewUser] = useState(false)
@@ -36,52 +35,17 @@ export default function Index() {
     )
   }
 
-  const newUser = (variables) => {
-    return (
-      request(
-        process.env.NEXT_PUBLIC_URL_BACKEND,
-        GQLLogin.NEW_USER,
-        variables
-      ) || null
-    )
-  }
-
-  const comprobarNewUser = () => {
-    newUser({ cedula: parseInt(state.usuario) }).then(
-      ({ newUser: { status, message, type, response } }) => {
-        if (status === 201) {
-          iniciarSesion()
-        } else if (status === 200 && state.usuario === state.clave_) {
-          setVisiblebDialogNewUser(true)
-          toast.current.show({
-            severity: type,
-            summary: 'Info',
-            detail: message,
-            life: 8000
-          })
-        } else {
-          toast.current.show({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Compruebe los datos de ingreso',
-            life: 8000
-          })
-        }
-      }
-    )
-  }
-
   const iniciarSesion = () => {
     const input = {
       usuario: state.usuario,
       clave: CryptoJS.AES.encrypt(
-        state.clave_,
+        state.clave,
         process.env.NEXT_PUBLIC_SECRET_KEY
-      ).toString(),
-      captcha: state.captcha
+      ).toString()
     }
 
     login({ input }).then(({ login }) => {
+      console.log(login)
       const loginJson = JSON.parse(
         CryptoJS.AES.decrypt(
           login,
@@ -169,11 +133,11 @@ export default function Index() {
                       placeholder="Contraseña"
                       className="redondeo-input-addon"
                       toggleMask
-                      value={state.clave_}
+                      value={state.clave}
                       feedback={false}
                       onKeyPress={onEnter}
                       onChange={({ target }) =>
-                        setState((ps) => ({ ...ps, clave_: target.value }))
+                        setState((ps) => ({ ...ps, clave: target.value }))
                       }
                     />
                   </div>
@@ -184,8 +148,8 @@ export default function Index() {
                       icon="pi pi-sign-in"
                       className="rounded-xl w-40 h-6"
                       label="Entrar"
-                      disabled={state.usuario === '' || state.clave_ === ''}
-                      onClick={comprobarNewUser}
+                      disabled={state.usuario === '' || state.clave === ''}
+                      onClick={iniciarSesion}
                     />
                     <Button
                       id="btn-register"
