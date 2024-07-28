@@ -149,7 +149,6 @@ export default function Index() {
                       <FontAwesomeIcon icon={faUser} />
                     </span>
                     <InputText
-                      keyfilter="pint"
                       id="user"
                       value={state.usuario}
                       maxLength={8}

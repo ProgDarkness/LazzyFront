@@ -18,11 +18,9 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
   const toast = useRef(null)
   const [state, setState] = useState({
     usuario: '',
-    clave_: '',
-    captcha: JSON.parse(process.env.NEXT_PUBLIC_PRODUCTION) ? '' : 'abc'
+    clave: '',
+    correo: ''
   })
-  const [correoUser, setCorreoUser] = useState(null)
-  const [claveUser, setClaveUser] = useState(null)
   const [confirClave, setConfirClave] = useState(null)
 
   const insertNewUser = (variables) => {
@@ -36,12 +34,12 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
   }
 
   const validarContraseña = () => {
-    if (confirClave === claveUser) {
+    if (confirClave === state.clave) {
       insertNewUser({
-        cedula: parseInt(state.usuario),
-        correo: correoUser,
+        cedula: state.usuario,
+        correo: state.correo,
         clave: CryptoJS.AES.encrypt(
-          claveUser,
+          state.clave,
           process.env.NEXT_PUBLIC_SECRET_KEY
         ).toString()
       }).then(({ inserNewUser: { status, message, type } }) => {
@@ -52,16 +50,15 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
           detail: message,
           life: 4000
         })
-        setCorreoUser('')
-        setClaveUser('')
-        setConfirClave('')
         setState({
           usuario: '',
-          clave_: '',
-          captcha: JSON.parse(process.env.NEXT_PUBLIC_PRODUCTION) ? '' : 'abc'
+          clave: '',
+          correo: ''
         })
+        setConfirClave('')
       })
     } else {
+      setConfirClave('')
       toast.current.show({
         severity: 'warn',
         summary: 'Info',
@@ -105,7 +102,6 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
                 <FontAwesomeIcon icon={faUser} />
               </span>
               <InputText
-                keyfilter="pint"
                 id="user"
                 value={state.usuario}
                 maxLength={8}
@@ -123,11 +119,13 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
               </span>
               <InputText
                 id="user"
-                value={correoUser}
+                value={state.correo}
                 autoComplete="off"
                 placeholder="Correo electrónico"
                 className="rounded-xl"
-                onChange={(e) => setCorreoUser(e.target.value)}
+                onChange={({ target: { value } }) =>
+                  setState((ps) => ({ ...ps, correo: value }))
+                }
               />
             </div>
             <div className="p-inputgroup h-8 mt-5">
@@ -139,9 +137,11 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
                 placeholder="Contraseña"
                 className="redondeo-input-addon"
                 toggleMask
-                value={claveUser}
+                value={state.correo}
                 feedback={false}
-                onChange={(e) => setClaveUser(e.target.value)}
+                onChange={({ target: { value } }) =>
+                  setState((ps) => ({ ...ps, clave: value }))
+                }
               />
             </div>
             <div className="p-inputgroup h-8 mt-5">
@@ -166,10 +166,9 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
                 className="rounded-xl w-40 h-6"
                 label="Registrate"
                 disabled={
-                  correoUser === null ||
-                  !correoUser.includes('@cne.gob.ve') ||
-                  claveUser === null ||
-                  claveUser?.length < 6 ||
+                  state.correo === null ||
+                  state.clave === null ||
+                  state.clave?.length < 6 ||
                   confirClave === null ||
                   confirClave?.length < 6
                 }
