@@ -232,7 +232,7 @@ function Tabla({ tokenQuery, permiso }) {
     <Toolbar
       left={leftContents}
       right={rightContents}
-      className="bg-[#3f51b5] p-2 redondeo-xl"
+      className="bg-[#dbcdae] p-2 redondeo-xl"
     />
   )
 

@@ -42,7 +42,7 @@ export default function gestionUsuario() {
     return (
       <AppLayoutMenus items={items}>
         <div className="flex justify-center items-center">
-          <div className=" text-[#2c9eaa] text-2xl xl:text-4xl font-extrabold tracking-widest">
+          <div className=" text-[#dbcdae] text-2xl xl:text-4xl font-extrabold tracking-widest">
             <h1>Cargando...</h1>
             <ProgressSpinner
               className="w-[50px] h-[50px] mt-[10px] ml-[80px]"
@@ -62,7 +62,7 @@ export default function gestionUsuario() {
     cerrarSesion()
   }
   return (
-    <AppLayoutMenus title="Gestión de Usuarios" items={items}>
+    <AppLayoutMenus items={items}>
       <Tabla tokenQuery={token} permiso={permisos}/>
     </AppLayoutMenus>
   )

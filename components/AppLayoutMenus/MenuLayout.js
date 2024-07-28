@@ -12,7 +12,7 @@ function Menu({ items }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const calculoHeight = window?.screen.height - 355
+      const calculoHeight = window?.screen.height - 555
 
       if (window?.screen.height > 758) {
         setSizeText('17px')
@@ -35,8 +35,8 @@ function Menu({ items }) {
           command: eval(item.command),
           style: item.command.includes(router.route)
             ? {
-                backgroundColor: '#2a7e87',
-                color: '#ffffff'
+                backgroundColor: '#dbcdae',
+                color: '#000000'
               }
             : { backgroundColor: '#ffffff' }
         }
@@ -80,6 +80,10 @@ function Menu({ items }) {
         }
         #slide-menu .p-menuitem * {
           color: inherit !important;
+        }
+        .p-slidemenu .p-menuitem-link:not(.p-disabled):hover {
+          background: #dbcdae;
+          border-radius: 0.5rem 0rem 0.5rem 0.5rem;
         }
       `}</style>
       <Salir visible={confirmSalir} setVisible={setConfirmSalir} />
