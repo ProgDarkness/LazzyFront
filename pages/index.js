@@ -45,7 +45,6 @@ export default function Index() {
     }
 
     login({ input }).then(({ login }) => {
-      console.log(login)
       const loginJson = JSON.parse(
         CryptoJS.AES.decrypt(
           login,
