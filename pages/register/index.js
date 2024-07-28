@@ -36,7 +36,7 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
   const validarContraseña = () => {
     if (confirClave === state.clave) {
       insertNewUser({
-        cedula: state.usuario,
+        usuario: state.usuario,
         correo: state.correo,
         clave: CryptoJS.AES.encrypt(
           state.clave,
@@ -137,7 +137,7 @@ function DialogRegister({ visiblebDialogNewUser, setVisiblebDialogNewUser }) {
                 placeholder="Contraseña"
                 className="redondeo-input-addon"
                 toggleMask
-                value={state.correo}
+                value={state.clave}
                 feedback={false}
                 onChange={({ target: { value } }) =>
                   setState((ps) => ({ ...ps, clave: value }))
