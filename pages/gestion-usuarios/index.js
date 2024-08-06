@@ -7,7 +7,8 @@ import useSWR from 'swr'
 import { useRouter } from 'next/router'
 import { ProgressSpinner } from 'primereact/progressspinner'
 
-export default function gestionUsuario() {
+
+export default function GestionUsuario() {
   const router = useRouter()
   const rutaActive = router?.route
   const { token, co_rol, cerrarSesion } = useSesion()

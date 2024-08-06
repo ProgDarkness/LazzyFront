@@ -5,7 +5,7 @@ import Image from 'next/image'
 export default function Header({ verMenu }) {
   return (
     <header id="header-principal" className={styles.header}>
-      <div className="w-full bg-[#dbcdae] mx-auto text-center h-[3rem] flex">
+      <div className="w-full bg-[#dbcdae] h-[3rem] flex">
         <div className="w-16 h-full flex items-center">
           <div className="w-full">
             <Image
@@ -15,7 +15,7 @@ export default function Header({ verMenu }) {
             />
           </div>
         </div>
-        <div className="w-4 h-full flex items-center">
+        <div className="h-full flex items-center">
           <p className="text-xl text-white drop-shadow-lg font-semibold font-serif">
             Lazzy
           </p>
